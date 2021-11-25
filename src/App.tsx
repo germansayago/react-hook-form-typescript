@@ -1,25 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useForm } from "react-hook-form";
+
+type FormValues = {
+  fname: string;
+  lname: string;
+  age: number;
+};
 
 function App() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>({
+    defaultValues: {
+      fname: "",
+      lname: "",
+    },
+  });
+  const onSubmit = (data) => console.log(data);
+
+  console.log("errors", errors);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input
+          {...register("fname", {
+            required: {
+              value: true,
+              message: "This field is required",
+            },
+          })}
+          placeholder="First Name"
+        />
+        <input
+          {...register("lname", {
+            maxLength: {
+              value: 5,
+              message: "Max lenght is 5",
+            },
+          })}
+          placeholder="Last Name"
+        />
+        <input type="number" {...register("age", { valueAsNumber: true })} />
+        <input type="submit" />
+      </form>
+    </>
   );
 }
 
